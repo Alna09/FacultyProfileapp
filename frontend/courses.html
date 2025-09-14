@@ -13,7 +13,7 @@
     <!-- NAVBAR -->
     <header class="bg-gray-800 shadow-lg">
         <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
-             <div>
+            <div>
                 <a href="web1.html" class="text-lg font-semibold text-cyan-300 hover:text-white">&larr; BACK</a>
             </div>
             <div class="hidden md:flex items-center space-x-2">
@@ -29,6 +29,7 @@
         <!-- Profile header -->
         <div id="profile-header" class="flex justify-between items-center mb-10">
             <h1 class="text-4xl font-extrabold text-black">Courses Handled</h1>
+            <!-- Profile Info -->
             <div id="profile-info" class="flex items-center space-x-4"></div>
         </div>
 
@@ -49,25 +50,23 @@
         const coursesList = document.getElementById('courses-list');
         const profileInfo = document.getElementById('profile-info');
 
-        // Get faculty ID from URL or localStorage
         const urlParams = new URLSearchParams(window.location.search);
-        let facultyId = urlParams.get('id') || localStorage.getItem('selectedFacultyId');
+        const facultyId = urlParams.get('id');
 
-        if (urlParams.get('id')) {
-            localStorage.setItem('selectedFacultyId', urlParams.get('id'));
-        }
+        // Retrieve faculty array from localStorage
+        const facultyArray = JSON.parse(localStorage.getItem("facultyArray")) || [];
 
-        const API_BASE = 'http://localhost:5000';
-
+        // Render faculty profile (name + photo)
         function renderProfileInfo(faculty) {
             profileInfo.innerHTML = `
                 <span class="text-gray-900 font-semibold hidden sm:block">${faculty.name || ''}</span>
-                <img src="${faculty.photo ? API_BASE + faculty.photo : 'https://placehold.co/80x80/0e7490/ffffff?text=NA'}"
+                <img src="${faculty.photo || 'https://placehold.co/80x80/0e7490/ffffff?text=NA'}"
                      alt="${faculty.name || 'Profile'}"
                      class="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-4 border-cyan-700">
             `;
         }
 
+        // Render courses
         function renderCourses(courses) {
             coursesList.innerHTML = '';
 
@@ -80,7 +79,7 @@
                 return;
             }
 
-            // If courses is a string (current DB format)
+            // If courses is a string
             if (typeof courses === 'string') {
                 coursesList.innerHTML = `
                     <div class="bg-cyan-100 text-gray-800 rounded-2xl p-8 shadow-md">
@@ -90,8 +89,8 @@
                 return;
             }
 
-            // Future-proof: if it becomes array of objects
-            if (Array.isArray(courses)) {
+            // If courses is an array of objects
+            if (Array.isArray(courses) && courses.length > 0) {
                 courses.forEach(course => {
                     const courseElement = document.createElement('div');
                     courseElement.className = 'bg-cyan-100 text-gray-800 rounded-2xl p-6 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300';
@@ -108,26 +107,18 @@
             }
         }
 
-        async function fetchFacultyData() {
-            if (!facultyId) {
-                coursesList.innerHTML = '<p class="text-center text-red-500">No faculty selected.</p>';
+        function loadData() {
+            if (!facultyId || !facultyArray[facultyId]) {
+                coursesList.innerHTML = '<p class="text-center text-red-500">No faculty selected or faculty not found.</p>';
                 return;
             }
 
-            try {
-                const res = await fetch(`${API_BASE}/api/faculty/${facultyId}`);
-                if (!res.ok) throw new Error('Faculty not found');
-                const faculty = await res.json();
-
-                renderProfileInfo(faculty);
-                renderCourses(faculty.coursesHandled);
-            } catch (error) {
-                console.error('Error fetching courses:', error);
-                coursesList.innerHTML = '<p class="text-center text-red-500">Failed to load courses.</p>';
-            }
+            const faculty = facultyArray[facultyId];
+            renderProfileInfo(faculty);
+            renderCourses(faculty.coursesHandled);
         }
 
-        fetchFacultyData();
+        loadData();
     });
     </script>
 </body>
