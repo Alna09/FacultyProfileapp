@@ -68,16 +68,6 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// ------------------ Serve static folders ------------------
-app.use("/login", express.static(path.join(__dirname, "login_folder")));
-app.use("/home", express.static(path.join(__dirname, "home_folder")));
-app.use("/faculty", express.static(path.join(__dirname, "faculty_folder")));
-app.use("/faculty_uploadss", express.static(uploadDir));
-
-// ------------------ Routes ------------------
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
-});
 
 // ------------------ User Auth ------------------
 app.post("/register", async (req, res) => {
