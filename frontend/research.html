@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Research & Projects</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style> body { font-family: 'Inter', sans-serif; } </style>
+</head>
+<body class="bg-cyan-500 text-gray-800">
+
+    <!-- NAVBAR -->
+    <header class="bg-gray-800 shadow-lg">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <div>
+                <a href="web1.html" class="text-lg font-semibold text-cyan-300 hover:text-white">&larr; BACK</a>
+            </div>
+            <div class="hidden md:flex items-center space-x-2">
+                <a href="web1.html" class="bg-cyan-200 text-gray-800 hover:bg-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Home</a>
+                <a href="about.html" class="bg-cyan-200 text-gray-800 hover:bg-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">About</a>
+                <a href="help.html" class="bg-cyan-200 text-gray-800 hover:bg-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Help</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="container mx-auto px-6 py-12">
+        <div id="profile-header" class="flex justify-between items-center mb-10">
+            <h1 class="text-4xl font-extrabold text-black">RESEARCH & PROJECTS</h1>
+            <div id="profile-info" class="flex items-center space-x-4"></div>
+        </div>
+
+        <!-- RESEARCH/PROJECT DETAILS -->
+        <section id="research-details" class="space-y-8"></section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-gray-800 mt-20">
+        <div class="container mx-auto px-6 py-4 text-center text-gray-200">
+            <p>&copy; 2025 CHRIST (Deemed to be University). All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const researchDetails = document.getElementById('research-details');
+        const profileInfo = document.getElementById('profile-info');
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const facultyId = urlParams.get('id') || urlParams.get('facultyId');
+        const API_BASE = 'http://localhost:5000';
+
+        function renderProfileInfo(faculty) {
+            profileInfo.innerHTML = `
+                <span class="text-gray-900 font-semibold hidden sm:block">${faculty.name || ''}</span>
+                <img src="${faculty.photo ? API_BASE + faculty.photo : 'https://placehold.co/80x80/0e7490/ffffff?text=NA'}"
+                     alt="${faculty.name || 'Profile'}"
+                     class="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-4 border-cyan-700">
+            `;
+        }
+
+        function renderResearch(faculty) {
+            researchDetails.innerHTML = '';
+
+            const researchData = faculty.researchProjects; // Use exact DB field
+
+            if (!researchData || researchData === '') {
+                researchDetails.innerHTML = `
+                    <div class="bg-cyan-100 text-gray-800 rounded-2xl p-8 shadow-md text-center">
+                        <h3 class="text-xl font-bold text-cyan-900">No Research Data Found</h3>
+                    </div>
+                `;
+                return;
+            }
+
+            // If researchProjects is a string (current DB format)
+            if (typeof researchData === 'string') {
+                researchDetails.innerHTML = `
+                    <div class="bg-cyan-100 text-gray-800 rounded-2xl p-8 shadow-md">
+                        <p class="text-lg">${researchData}</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Future-proof: If researchProjects becomes an object
+            if (typeof researchData === 'object') {
+                const detailsHtml = `
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <div class="md:col-span-1 bg-cyan-200/50 p-6 rounded-lg">
+                            <div class="space-y-4">
+                                ${Object.entries(researchData.details || {}).map(([key, value]) =>
+                                    `<p><strong class="font-semibold block text-cyan-900">${key}:</strong> ${value}</p>`
+                                ).join('')}
+                            </div>
+                        </div>
+                        <div class="md:col-span-2 flex flex-col justify-center">
+                            ${researchData.spotlight ? `
+                                <h2 class="text-3xl font-bold text-cyan-900 mb-4">${researchData.spotlight.title}</h2>
+                                <p class="text-gray-700 mb-6">${researchData.spotlight.description}</p>
+                                <img src="${researchData.spotlight.imageUrl}" alt="Project Visualization" class="rounded-lg shadow-lg w-full">
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+                researchDetails.innerHTML = detailsHtml;
+                return;
+            }
+        }
+
+        async function fetchData() {
+            if (!facultyId) {
+                researchDetails.innerHTML = '<p class="text-center text-red-500">No faculty selected.</p>';
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/api/faculty/${facultyId}`);
+                if (!res.ok) throw new Error('Faculty not found');
+                const faculty = await res.json();
+
+                renderProfileInfo(faculty);
+                renderResearch(faculty);
+            } catch (error) {
+                console.error('Error fetching research data:', error);
+                researchDetails.innerHTML = '<p class="text-center text-red-500">Failed to load research data.</p>';
+            }
+        }
+
+        fetchData();
+    });
+    </script>
+</body>
+</html>

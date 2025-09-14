@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Faculty Dashboard</title>
+  <script type="text/javascript">
+    function sayhello(){
+      alert("Welcomes you")
+    }
+
+    function goHome() {
+      window.location.href = "page1.html";
+    }
+  </script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    html, body {
+      height: 100%;
+      width: 100%;
+    }
+
+    body {
+      background-color: #1d9fc9;
+      overflow-x: hidden;
+    }
+
+    .navbar {
+      background-color: #42b9dd;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .navbar .back {
+      color: white;
+      text-decoration: none;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .menu {
+      display: flex;
+      gap: 10px;
+    }
+
+    .menu button {
+      background-color: #1d9fc9;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      font-size: 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+
+    .menu button:hover {
+      background-color: #148db3;
+    }
+
+    .main-section {
+      display: flex;
+      padding: 40px 60px;
+      height: calc(100vh - 120px);
+      gap: 30px; 
+    }
+
+    .container {
+      flex: 2; 
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 30px;
+    }
+
+    .card {
+      display: block;
+      background-color: #b7f9ff;
+      padding: 40px 20px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 10px;
+      box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+      text-decoration: none;
+      color: black;
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+      box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.3);
+      background-color: #a4f0f7;
+    }
+
+    .side-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center; 
+      background-color: #b7f9ff;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+    }
+
+    .side-info img {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 20px;
+      border: 3px solid #1d9fc9;
+    }
+
+    .side-info h2 {
+      font-size: 22px;
+      color: #004c75;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .side-info p {
+      font-size: 18px;
+      color: #004c75;
+      text-align: center;
+    }
+
+    footer {
+      text-align: center;
+      padding: 10px;
+      background-color: #2b2b2b;
+      color: white;
+      font-size: 14px;
+    }
+
+    @media (max-width: 900px) {
+      .main-section {
+        flex-direction: column;
+        padding: 20px;
+        height: auto;
+      }
+
+      .container, .side-info {
+        width: 100%;
+        margin-left: 0;
+        padding-left: 0;
+      }
+
+      .side-info {
+        margin-top: 20px;
+      }
+
+      .menu {
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .menu button {
+        width: 100px;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation bar -->
+  <div class="navbar">
+    <a href="Frontend.html" class="back">&larr; BACK</a>
+    <div class="menu">
+      <button onclick="goHome()">Home</button>
+      <button onclick="sayhello()">About</button>
+      <button onclick="sayhello()">Help</button>
+    </div>
+  </div>
+
+  <!-- Main content section -->
+  <div class="main-section">
+    <div class="container">
+      <a href="publications.html" class="card">PUBLICATIONS</a>
+      <a href="research.html" class="card">RESEARCH PROJECTS</a>
+      <a href="articles.html" class="card">ARTICLE IN JOURNALS</a>
+      <a href="workshop.html" class="card">WORKSHOP/ <br> TRAINING PROGRAMME</a>
+      <a href="courses.html" class="card">COURSES HANDLED</a>
+      <a href="awards.html" class="card">AWARDS RECEIVED</a>
+    </div>
+
+    <!-- Side faculty info -->
+    <div class="side-info" id="facultyInfo">
+      <p>Loading faculty info...</p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    CHRIST (Deemed to be University)
+  </footer>
+
+  <script>
+    // Get faculty ID from URL or localStorage
+    const params = new URLSearchParams(window.location.search);
+    let facultyId = params.get('id');
+
+    if (!facultyId) {
+      facultyId = localStorage.getItem('selectedFacultyId');
+    } else {
+      localStorage.setItem('selectedFacultyId', facultyId);
+    }
+
+    const facultyInfoDiv = document.getElementById('facultyInfo');
+
+    if (facultyId) {
+      fetch(`http://localhost:5000/api/faculty/${facultyId}`)
+        .then(res => res.json())
+        .then(faculty => {
+          facultyInfoDiv.innerHTML = `
+            <img src="http://localhost:5000${faculty.photo}" alt="${faculty.name}">
+            <h2>${faculty.name}</h2>
+            <p>${faculty.designation}</p>
+          `;
+
+          // Update the category links to include faculty ID
+          document.querySelectorAll('.container .card').forEach(card => {
+            const originalHref = card.getAttribute('href').split('?')[0]; // remove existing query if any
+            card.setAttribute('href', `${originalHref}?id=${faculty._id}`);
+          });
+        })
+        .catch(err => {
+          console.error("Error fetching faculty:", err);
+          facultyInfoDiv.innerHTML = "<p>Failed to load faculty info.</p>";
+        });
+    } else {
+      facultyInfoDiv.innerHTML = "<p>No faculty selected.</p>";
+    }
+  </script>
+
+</body>
+</html>

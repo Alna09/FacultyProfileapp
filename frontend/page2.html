@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Faculty Profiles</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; font-family: Arial, sans-serif; }
+    body { display: flex; flex-direction: column; }
+    header { display: flex; justify-content: space-between; align-items: center; padding: 20px; background-color: #eaf7fa; }
+    header h1 { font-family: 'Times New Roman', serif; }
+    nav a { margin-left: 20px; text-decoration: none; color: black; }
+    main { flex: 1; display: flex; padding: 20px; gap: 20px; min-height: 0; }
+    .profile-container { flex: 2; display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; overflow-y: auto; }
+    .profile-card { 
+      background-color: #b9ecf3; 
+      padding: 20px; 
+      border-radius: 10px; 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      text-align: center;
+      transition: transform 0.2s;
+    }
+    .profile-card:hover {
+      transform: scale(1.03);
+    }
+    .profile-card img { 
+      width: 120px; 
+      height: 120px; 
+      border-radius: 8px; 
+      object-fit: cover; 
+      margin-bottom: 15px;
+    }
+    .profile-info h2 { margin: 0; color: #004c75; font-size: 18px; }
+    .profile-info p { margin: 5px 0; font-size: 14px; }
+    .image-section { flex: 1; display: flex; justify-content: center; align-items: stretch; }
+    .image-section img { width: 100%; height: 100%; object-fit: fill; border-radius: 8px; align-self: flex-end; }
+    footer { background-color: #145965; color: white; text-align: center; padding: 10px; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>FACULTY PROFILES</h1>
+    <nav>
+      <a href="#">Home</a>
+      <a href="#">About</a>
+      <a href="#">Help</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="profile-container">
+      <!-- Faculty Cards -->
+      <div class="profile-card">
+        <img src="faculty1.jpg" alt="Dr BALAMURUGAN M">
+        <div class="profile-info">
+          <h2>Dr BALAMURUGAN M</h2>
+          <p><strong>Designation:</strong> HOD of Computer Science and Engineering</p>
+          <p><strong>Department:</strong> Computer Science and Engineering</p>
+        </div>
+      </div>
+
+      <div class="profile-card">
+        <img src="faculty2.jpg" alt="Dr JYOTHI MANDALA">
+        <div class="profile-info">
+          <h2>Dr JYOTHI MANDALA</h2>
+          <p><strong>Designation:</strong> Associate Professor</p>
+          <p><strong>Department:</strong> Computer Science and Engineering</p>
+        </div>
+      </div>
+
+      <div class="profile-card">
+        <img src="faculty3.jpg" alt="ASHA M S">
+        <div class="profile-info">
+          <h2>ASHA M S</h2>
+          <p><strong>Designation:</strong> Assistant Professor</p>
+          <p><strong>Department:</strong> Computer Science and Engineering</p>
+        </div>
+      </div>
+
+      <div class="profile-card">
+        <img src="faculty4.jpg" alt="Dr BABU RAJ E">
+        <div class="profile-info">
+          <h2>Dr BABU RAJ E</h2>
+          <p><strong>Designation:</strong> Associate Professor</p>
+          <p><strong>Department:</strong> Computer Science and Engineering</p>
+        </div>
+      </div>
+
+      <div class="profile-card">
+        <img src="faculty5.jpg" alt="Dr GANESH KUMAR R">
+        <div class="profile-info">
+          <h2>Dr GANESH KUMAR R</h2>
+          <p><strong>Designation:</strong> Associate Professor</p>
+          <p><strong>Department:</strong> Computer Science and Engineering</p>
+        </div>
+      </div>
+
+      <div class="profile-card">
+        <img src="faculty6.jpg" alt="Dr NAVEEN J">
+        <div class="profile-info">
+          <h2>Dr NAVEEN J</h2>
+          <p><strong>Designation:</strong> Associate Professor</p>
+          <p><strong>Department:</strong> Computer Science and Engineering</p>
+        </div>
+      </div>
+
+      <div class="profile-card">
+        <img src="faculty7.jpg" alt="Dr JENEFA J">
+        <div class="profile-info">
+          <h2>Dr JENEFA J</h2>
+          <p><strong>Designation:</strong> Assistant Professor</p>
+          <p><strong>Department:</strong> Computer Science and Engineering</p>
+        </div>
+      </div>
+
+      <div class="profile-card">
+        <img src="faculty8.jpg" alt="Dr BEJOY B J">
+        <div class="profile-info">
+          <h2>Dr BEJOY B J</h2>
+          <p><strong>Designation:</strong> Assistant Professor</p>
+          <p><strong>Department:</strong> Computer Science and Engineering</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="image-section">
+      <img src="OIP.webp" alt="Library Image" />
+    </div>
+  </main>
+
+  <footer>
+    CHRIST(Deemed to be University)
+  </footer>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Courses Handled</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style> body { font-family: 'Inter', sans-serif; } </style>
+</head>
+<body class="bg-cyan-500 text-gray-800">
+
+    <!-- NAVBAR -->
+    <header class="bg-gray-800 shadow-lg">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+             <div>
+                <a href="web1.html" class="text-lg font-semibold text-cyan-300 hover:text-white">&larr; BACK</a>
+            </div>
+            <div class="hidden md:flex items-center space-x-2">
+                <a href="web1.html" class="bg-cyan-200 text-gray-800 hover:bg-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Home</a>
+                <a href="about.html" class="bg-cyan-200 text-gray-800 hover:bg-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">About</a>
+                <a href="help.html" class="bg-cyan-200 text-gray-800 hover:bg-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Help</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="container mx-auto px-6 py-12">
+        <!-- Profile header -->
+        <div id="profile-header" class="flex justify-between items-center mb-10">
+            <h1 class="text-4xl font-extrabold text-black">Courses Handled</h1>
+            <div id="profile-info" class="flex items-center space-x-4"></div>
+        </div>
+
+        <!-- Courses content -->
+        <section id="courses-list" class="space-y-8"></section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-gray-800 mt-20">
+        <div class="container mx-auto px-6 py-4 text-center text-gray-200">
+            <p>&copy; 2025 CHRIST (Deemed to be University). All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const coursesList = document.getElementById('courses-list');
+        const profileInfo = document.getElementById('profile-info');
+
+        // Get faculty ID from URL or localStorage
+        const urlParams = new URLSearchParams(window.location.search);
+        let facultyId = urlParams.get('id') || localStorage.getItem('selectedFacultyId');
+
+        if (urlParams.get('id')) {
+            localStorage.setItem('selectedFacultyId', urlParams.get('id'));
+        }
+
+        const API_BASE = 'http://localhost:5000';
+
+        function renderProfileInfo(faculty) {
+            profileInfo.innerHTML = `
+                <span class="text-gray-900 font-semibold hidden sm:block">${faculty.name || ''}</span>
+                <img src="${faculty.photo ? API_BASE + faculty.photo : 'https://placehold.co/80x80/0e7490/ffffff?text=NA'}"
+                     alt="${faculty.name || 'Profile'}"
+                     class="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-4 border-cyan-700">
+            `;
+        }
+
+        function renderCourses(courses) {
+            coursesList.innerHTML = '';
+
+            if (!courses || courses === '') {
+                coursesList.innerHTML = `
+                    <div class="bg-cyan-100 text-gray-800 rounded-2xl p-8 shadow-md text-center">
+                        <h3 class="text-xl font-bold text-cyan-900">No Courses Found</h3>
+                    </div>
+                `;
+                return;
+            }
+
+            // If courses is a string (current DB format)
+            if (typeof courses === 'string') {
+                coursesList.innerHTML = `
+                    <div class="bg-cyan-100 text-gray-800 rounded-2xl p-8 shadow-md">
+                        <p class="text-lg">${courses}</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Future-proof: if it becomes array of objects
+            if (Array.isArray(courses)) {
+                courses.forEach(course => {
+                    const courseElement = document.createElement('div');
+                    courseElement.className = 'bg-cyan-100 text-gray-800 rounded-2xl p-6 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300';
+                    courseElement.innerHTML = `
+                        <h3 class="text-xl font-bold mb-3 text-cyan-900">${course.title || 'Untitled'}</h3>
+                        <div class="space-y-1 text-sm text-gray-700">
+                            <p><strong>Code:</strong> ${course.code || '-'}</p>
+                            <p><strong>Semester:</strong> ${course.semester || '-'}</p>
+                            <p><strong>Description:</strong> ${course.description || '-'}</p>
+                        </div>
+                    `;
+                    coursesList.appendChild(courseElement);
+                });
+            }
+        }
+
+        async function fetchFacultyData() {
+            if (!facultyId) {
+                coursesList.innerHTML = '<p class="text-center text-red-500">No faculty selected.</p>';
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/api/faculty/${facultyId}`);
+                if (!res.ok) throw new Error('Faculty not found');
+                const faculty = await res.json();
+
+                renderProfileInfo(faculty);
+                renderCourses(faculty.coursesHandled);
+            } catch (error) {
+                console.error('Error fetching courses:', error);
+                coursesList.innerHTML = '<p class="text-center text-red-500">Failed to load courses.</p>';
+            }
+        }
+
+        fetchFacultyData();
+    });
+    </script>
+</body>
+</html>
