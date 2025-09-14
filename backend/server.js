@@ -76,7 +76,7 @@ app.use("/faculty_uploadss", express.static(uploadDir));
 
 // ------------------ Routes ------------------
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "login_folder/login.html"));
+  res.sendFile(path.join(__dirname, "index.html"));
 });
 
 // ------------------ User Auth ------------------
