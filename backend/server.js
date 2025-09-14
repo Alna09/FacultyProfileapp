@@ -13,9 +13,9 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-
+// ✅ Allow frontend from Vercel (or localhost during dev)
 app.use(cors({
-  origin: "https://faculty-profileapp.vercel.app",
+  origin: process.env.FRONTEND_URL || "http://localhost:3000", 
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
