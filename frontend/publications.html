@@ -51,14 +51,15 @@
         const profileInfo = document.getElementById('profile-info');
 
         const urlParams = new URLSearchParams(window.location.search);
-        const facultyId = urlParams.get('id') || urlParams.get('facultyId');
+        const facultyId = urlParams.get('id');
 
-        const API_BASE = 'http://localhost:5000';
+        // Retrieve faculty array from localStorage
+        const facultyArray = JSON.parse(localStorage.getItem("facultyArray")) || [];
 
         function renderProfileInfo(faculty) {
             profileInfo.innerHTML = `
                 <span class="text-gray-900 font-semibold hidden sm:block">${faculty.name || ''}</span>
-                <img src="${faculty.photo ? API_BASE + faculty.photo : 'https://placehold.co/80x80/0e7490/ffffff?text=NA'}"
+                <img src="${faculty.photo || 'https://placehold.co/80x80/0e7490/ffffff?text=NA'}"
                      alt="${faculty.name || 'Profile'}"
                      class="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-4 border-cyan-700">
             `;
@@ -100,26 +101,18 @@
             }
         }
 
-        async function fetchData() {
-            if (!facultyId) {
-                publicationsList.innerHTML = '<p class="text-center text-red-500">No faculty selected.</p>';
+        function loadData() {
+            if (!facultyId || !facultyArray[facultyId]) {
+                publicationsList.innerHTML = '<p class="text-center text-red-500">No faculty selected or faculty not found.</p>';
                 return;
             }
 
-            try {
-                const res = await fetch(`${API_BASE}/api/faculty/${facultyId}`);
-                if (!res.ok) throw new Error('Faculty not found');
-                const faculty = await res.json();
-
-                renderProfileInfo(faculty);
-                renderPapers(faculty.publications);
-            } catch (error) {
-                console.error('Error fetching publications:', error);
-                publicationsList.innerHTML = '<p class="text-center text-red-500">Failed to load publications.</p>';
-            }
+            const faculty = facultyArray[facultyId];
+            renderProfileInfo(faculty);
+            renderPapers(faculty.publications);
         }
 
-        fetchData();
+        loadData();
     });
     </script>
 </body>
