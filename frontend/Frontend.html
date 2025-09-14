@@ -13,7 +13,6 @@
     nav a { margin-left: 20px; text-decoration: none; color: black; }
     main { flex: 1; display: flex; padding: 20px; gap: 20px; min-height: 0; }
 
-    /* Faculty list */
     .profile-section { flex: 1; display: flex; flex-direction: column; }
     .profile-container { flex: 1; display: flex; flex-direction: column; gap: 20px; overflow-y: auto; margin-top: 20px; }
     .profile-card { 
@@ -51,7 +50,6 @@
   </header>
 
   <main>
-    <!-- Left side: Faculty list -->
     <div class="profile-section">
       <div class="profile-container" id="facultyList"></div>
     </div>
@@ -62,37 +60,131 @@
   </footer>
 
   <script>
-    const API_URL = "http://localhost:5000/api/faculty";
-
-    async function loadFaculty() {
-      try {
-        const res = await fetch(API_URL);
-        const facultyList = await res.json();
-        const container = document.getElementById("facultyList");
-        container.innerHTML = "";
-
-        facultyList.forEach(faculty => {
-          const card = document.createElement("div");
-          card.className = "profile-card";
-
-          // Redirect to web1.html with faculty ID
-          card.addEventListener("click", () => {
-            window.location.href = `web1.html?id=${faculty._id}`;
-          });
-
-          card.innerHTML = `
-            <img src="http://localhost:5000${faculty.photo}" alt="Profile Photo">
-            <div class="profile-info">
-              <h2>${faculty.name}</h2>
-              <p><strong>Designation:</strong> ${faculty.designation}</p>
-              <p><strong>Department:</strong> ${faculty.department}</p>
-            </div>
-          `;
-          container.appendChild(card);
-        });
-      } catch (err) {
-        console.error("❌ Error loading faculty:", err);
+    const facultyList = [
+      {
+        name: "Dr BALAMURUGAN M",
+        designation: "HOD of Computer Science and Engineering",
+        department: "Computer Science and Engineering",
+        photo: "faculty_uploadss/faculty1.png",
+        publications: "List of publications by Dr BALAMURUGAN M...",
+        researchProjects: "Research projects handled by Dr BALAMURUGAN M...",
+        articlesAndJournals: "Articles and journals authored by Dr BALAMURUGAN M...",
+        workshops: "Workshops/training programmes conducted by Dr BALAMURUGAN M...",
+        coursesHandled: "Courses handled by Dr BALAMURUGAN M...",
+        awardsReceived: "Awards received by Dr BALAMURUGAN M..."
+      },
+      {
+        name: "Dr JYOTHI MANDALA",
+        designation: "Associate Professor",
+        department: "Computer Science and Engineering",
+        photo: "faculty_uploadss/faculty2.png",
+        publications: "Publications of Dr JYOTHI MANDALA...",
+        researchProjects: "Research projects by Dr JYOTHI MANDALA...",
+        articlesAndJournals: "Articles and journals of Dr JYOTHI MANDALA...",
+        workshops: "Workshops attended or conducted by Dr JYOTHI MANDALA...",
+        coursesHandled: "Courses handled by Dr JYOTHI MANDALA...",
+        awardsReceived: "Awards received by Dr JYOTHI MANDALA..."
+      },
+      {
+        name: "ASHA M S",
+        designation: "Assistant Professor",
+        department: "Computer Science and Engineering",
+        photo: "faculty_uploadss/faculty3.png",
+        publications: "Publications of ASHA M S...",
+        researchProjects: "Research projects by ASHA M S...",
+        articlesAndJournals: "Articles and journals of ASHA M S...",
+        workshops: "Workshops attended by ASHA M S...",
+        coursesHandled: "Courses handled by ASHA M S...",
+        awardsReceived: "Awards received by ASHA M S..."
+      },
+      {
+        name: "Dr BABU RAJ E",
+        designation: "Associate Professor",
+        department: "Computer Science and Engineering",
+        photo: "faculty_uploadss/faculty4.png",
+        publications: "Publications of Dr BABU RAJ E...",
+        researchProjects: "Research projects by Dr BABU RAJ E...",
+        articlesAndJournals: "Articles and journals of Dr BABU RAJ E...",
+        workshops: "Workshops attended by Dr BABU RAJ E...",
+        coursesHandled: "Courses handled by Dr BABU RAJ E...",
+        awardsReceived: "Awards received by Dr BABU RAJ E..."
+      },
+      {
+        name: "Dr GANESH KUMAR R",
+        designation: "Associate Professor",
+        department: "Computer Science and Engineering",
+        photo: "faculty_uploadss/faculty5.png",
+        publications: "Publications of Dr GANESH KUMAR R...",
+        researchProjects: "Research projects by Dr GANESH KUMAR R...",
+        articlesAndJournals: "Articles and journals of Dr GANESH KUMAR R...",
+        workshops: "Workshops attended by Dr GANESH KUMAR R...",
+        coursesHandled: "Courses handled by Dr GANESH KUMAR R...",
+        awardsReceived: "Awards received by Dr GANESH KUMAR R..."
+      },
+      {
+        name: "Dr NAVEEN J",
+        designation: "Associate Professor",
+        department: "Computer Science and Engineering",
+        photo: "faculty_uploadss/faculty6.png",
+        publications: "Publications of Dr NAVEEN J...",
+        researchProjects: "Research projects by Dr NAVEEN J...",
+        articlesAndJournals: "Articles and journals of Dr NAVEEN J...",
+        workshops: "Workshops attended by Dr NAVEEN J...",
+        coursesHandled: "Courses handled by Dr NAVEEN J...",
+        awardsReceived: "Awards received by Dr NAVEEN J..."
+      },
+      {
+        name: "Dr JENEFA J",
+        designation: "Assistant Professor",
+        department: "Computer Science and Engineering",
+        photo: "faculty_uploadss/faculty7.png",
+        publications: "Publications of Dr JENEFA J...",
+        researchProjects: "Research projects by Dr JENEFA J...",
+        articlesAndJournals: "Articles and journals of Dr JENEFA J...",
+        workshops: "Workshops attended by Dr JENEFA J...",
+        coursesHandled: "Courses handled by Dr JENEFA J...",
+        awardsReceived: "Awards received by Dr JENEFA J..."
+      },
+      {
+        name: "Dr BEJOY B J",
+        designation: "Assistant Professor",
+        department: "Computer Science and Engineering",
+        photo: "faculty_uploadss/faculty8.png",
+        publications: "Publications of Dr BEJOY B J...",
+        researchProjects: "Research projects by Dr BEJOY B J...",
+        articlesAndJournals: "Articles and journals of Dr BEJOY B J...",
+        workshops: "Workshops attended by Dr BEJOY B J...",
+        coursesHandled: "Courses handled by Dr BEJOY B J...",
+        awardsReceived: "Awards received by Dr BEJOY B J..."
       }
+    ];
+
+    function loadFaculty() {
+      const container = document.getElementById("facultyList");
+      container.innerHTML = "";
+
+      // Save array in localStorage for the next page
+      localStorage.setItem("facultyArray", JSON.stringify(facultyList));
+
+      facultyList.forEach((faculty, index) => {
+        const card = document.createElement("div");
+        card.className = "profile-card";
+
+        card.addEventListener("click", () => {
+          localStorage.setItem("selectedFacultyId", index);
+          window.location.href = `web1.html?id=${index}`;
+        });
+
+        card.innerHTML = `
+          <img src="${faculty.photo}" alt="Profile Photo">
+          <div class="profile-info">
+            <h2>${faculty.name}</h2>
+            <p><strong>Designation:</strong> ${faculty.designation}</p>
+            <p><strong>Department:</strong> ${faculty.department}</p>
+          </div>
+        `;
+        container.appendChild(card);
+      });
     }
 
     loadFaculty();
