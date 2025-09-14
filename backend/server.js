@@ -1,6 +1,5 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const dotenv = require("dotenv");
 const bcrypt = require("bcryptjs");
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -8,16 +7,20 @@ const path = require("path");
 const multer = require("multer");
 const fs = require("fs");
 
-dotenv.config();
 const app = express();
 
 // ------------------ Middleware ------------------
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(cors());
+
+
+app.use(cors({
+  origin: "https://faculty-profileapp.vercel.app",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
 
 // ------------------ MongoDB Connections ------------------
-// Users DB (login)
 mongoose
   .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
@@ -211,4 +214,7 @@ app.delete("/api/faculty/:id", async (req, res) => {
 
 // ------------------ Start Server ------------------
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🚀 Server running at http://localhost:${PORT}`));
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`🌐 Frontend allowed: ${process.env.FRONTEND_URL || "http://localhost:3000"}`);
+});
